@@ -1,0 +1,50 @@
+body{
+    background-color: rgb(230, 230, 230);
+}
+
+.table-title-row-style{
+    background-color: darkblue;
+    color: white;
+}
+
+th{
+    padding-right: 1rem;
+    padding-left: .5rem;
+}
+
+td{
+    padding-right: 1rem;
+    padding-left: .5rem;
+}
+
+.table-sorter{
+    color: white;
+}
+
+.table-sorter:link{
+    color:white;
+    text-decoration: none;
+}
+
+.table-sorter:hover{
+    color: white;
+    text-decoration: underline;
+}
+
+.table-sorter:active{
+    color: grey;
+    text-decoration: underline;
+}
+
+.table-sorter:visited{
+    color: white;
+    text-decoration: none;
+}
+
+.table-row-bg{
+    background-color: rgba(0,0,0,.1);
+}
+
+.table-column-select-bg{
+    background-color: rgba(0,0,40,.1)
+}
