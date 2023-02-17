@@ -29,6 +29,9 @@
     //variable for storing the current page (starts at 0 for 0-indexing)
     let pgNumber = 0;
 
+    //variable for storing ascending/descending toggle
+    let toggle = 1;
+
 //async function that fetches the people list and stores it to a global variable
 async function ImportData(){
     const promise = await fetch("./data/data.json");
@@ -83,10 +86,21 @@ function SortDataIntoArrays(perPage, arr){
         resultArr.push([]);
     }
     let counter = 0;
-    for (let i = 0; i < totalPgs; i++){
-        for (let j = 0; j < perPage; j++){
-            resultArr[i].push(arr[counter]);
-            counter++;
+    if (toggle === 1){
+        counter = 0;
+        for (let i = 0; i < totalPgs; i++){
+            for (let j = 0; j < perPage; j++){
+                resultArr[i].push(arr[counter]);
+                counter++;
+            }
+        }
+    } else {
+        counter = (arr.length - 1);
+        for (let i = 0; i < totalPgs; i++){
+            for (let j = 0; j < perPage; j++){
+                resultArr[i].push(arr[counter]);
+                counter--;
+            }
         }
     }
     // console.log(people);
@@ -233,6 +247,15 @@ function CreatePaginationInterface(pgNum){
     paginationInsert.appendChild(nextBtnLi);
 }
 
+//Function that flips toggler for sorting pages in ascending and descending order
+function Toggler(){
+    if (toggle === 1){
+        toggle = 0;
+    } else {
+        toggle = 1;
+    }
+}
+
 //EVENT LISTENERS FOR BUTTONS/INPUTS
 //Items per page input dropdown
 pageItemNumSelect.addEventListener('change', function(){
@@ -248,6 +271,7 @@ idSort.addEventListener('click', function(){
     pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
     CreatePaginationInterface(0);
+    Toggler();
 });
 
 firstNameSort.addEventListener('click', function(){
@@ -255,6 +279,7 @@ firstNameSort.addEventListener('click', function(){
     pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
     CreatePaginationInterface(0);
+    Toggler();
 });
 
 lastNameSort.addEventListener('click', function(){
@@ -262,6 +287,7 @@ lastNameSort.addEventListener('click', function(){
     pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
     CreatePaginationInterface(0);
+    Toggler();
 });
 
 emailSort.addEventListener('click', function(){
@@ -269,6 +295,7 @@ emailSort.addEventListener('click', function(){
     pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
     CreatePaginationInterface(0);
+    Toggler();
 });
 
 heightSort.addEventListener('click', function(){
@@ -276,6 +303,7 @@ heightSort.addEventListener('click', function(){
     pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
     CreatePaginationInterface(0);
+    Toggler();
 });
 
 ageSort.addEventListener('click', function(){
@@ -283,6 +311,7 @@ ageSort.addEventListener('click', function(){
     pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
     CreatePaginationInterface(0);
+    Toggler();
 });
 
 //INITIAL CALLS TO POPULATE PAGE
