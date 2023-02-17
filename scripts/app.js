@@ -99,97 +99,196 @@ async function PopulateDataTable(perPage, pageNum){
     await ImportData();
     dataTableInjectionArea.innerHTML = "";
     let sortedInfo = SortDataIntoArrays(perPage, SortDataByType(dataSelector, people));
-    console.log(sortedInfo);
+    // console.log(sortedInfo);
+    let bgCounter = 0;
     sortedInfo[pageNum].map(item => {
-        CreateTableRow(pageNum, dataSelector, item);
+        CreateTableRow(bgCounter, dataSelector, item);
+        bgCounter++;
     })
 }
 
 //function that creates the individual rows in the table and pushes them out onto the page
 function CreateTableRow(counter, selector, data){
-    console.log(data);
-    let idCell = document.createElement('td');
-        if (selector === 'Id'){
-            idCell.className = 'table-column-select-bg'
-        }
-        idCell.textContent = data.Id;
-    let firstNameCell = document.createElement('td');
-        if (selector === 'FirstName'){
-            firstNameCell.className = 'table-column-select-bg'
-        }
-        firstNameCell.textContent = data.FirstName;
-    let lastNameCell = document.createElement('td');
-        if (selector === 'LastName'){
-            lastNameCell.className = 'table-column-select-bg'
-        }
-        lastNameCell.textContent = data.LastName;
-    let emailCell = document.createElement('td');
-        if (selector === 'Email'){
-            emailCell.className = 'table-column-select-bg'
-        }
-        emailCell.textContent = data.Email;
-    let heightCell = document.createElement('td');
-        if (selector === 'Height'){
-            heightCell.className = 'table-column-select-bg'
-        }
-        heightCell.textContent = LaunderHeightInformation(data.Height);
-    let ageCell = document.createElement('td');
-        if (selector === 'Age'){
-            ageCell.className = 'table-column-select-bg'
-        }
-        ageCell.textContent = data.Age;
-    let tableRow = document.createElement('tr');
-        if (counter % 2 === 1){
-            tableRow.className = 'table-row-bg';
-        }
-    tableRow.appendChild(idCell);
-    tableRow.appendChild(firstNameCell);
-    tableRow.appendChild(lastNameCell);
-    tableRow.appendChild(emailCell);
-    tableRow.appendChild(heightCell);
-    tableRow.appendChild(ageCell);
-    dataTableInjectionArea.appendChild(tableRow);
+    // console.log(data);
+    if (data != undefined){
+        let idCell = document.createElement('td');
+            if (selector === 'Id'){
+                idCell.className = 'table-column-select-bg'
+            }
+            idCell.textContent = data.Id;
+        let firstNameCell = document.createElement('td');
+            if (selector === 'FirstName'){
+                firstNameCell.className = 'table-column-select-bg'
+            }
+            firstNameCell.textContent = data.FirstName;
+        let lastNameCell = document.createElement('td');
+            if (selector === 'LastName'){
+                lastNameCell.className = 'table-column-select-bg'
+            }
+            lastNameCell.textContent = data.LastName;
+        let emailCell = document.createElement('td');
+            if (selector === 'Email'){
+                emailCell.className = 'table-column-select-bg'
+            }
+            emailCell.textContent = data.Email;
+        let heightCell = document.createElement('td');
+            if (selector === 'Height'){
+                heightCell.className = 'table-column-select-bg'
+            }
+            heightCell.textContent = LaunderHeightInformation(data.Height);
+        let ageCell = document.createElement('td');
+            if (selector === 'Age'){
+                ageCell.className = 'table-column-select-bg'
+            }
+            ageCell.textContent = data.Age;
+        let tableRow = document.createElement('tr');
+            //console.log(counter);
+            if (counter % 2 === 1){
+                tableRow.className = 'table-row-bg';
+            }
+        tableRow.appendChild(idCell);
+        tableRow.appendChild(firstNameCell);
+        tableRow.appendChild(lastNameCell);
+        tableRow.appendChild(emailCell);
+        tableRow.appendChild(heightCell);
+        tableRow.appendChild(ageCell);
+        dataTableInjectionArea.appendChild(tableRow);
+    } else {
+        return 0;
+    }
 }
 
 //Function that creates pagination buttons and determines their behaviors
 function CreatePaginationInterface(pgNum){
+    //Variable to calculate the total number of pages
+    let totNumPgs = (people.length / pplPerPage);
     
+    //Clear pagination insert area for new buttons to appear
+    paginationInsert.innerHTML = '';
+
+    //Create previous btn
+    let prevBtnA = document.createElement('a');
+        prevBtnA.className = 'page-link';
+        prevBtnA.textContent = 'Previous';
+    let prevBtnLi = document.createElement('li');
+        if (pgNum === 0){
+            prevBtnLi.className = 'page-item disabled';
+        } else {
+            prevBtnLi.className = 'page-item';
+        }
+        prevBtnLi.addEventListener('click', function(){
+            if (pgNum != 0){
+                PopulateDataTable(pplPerPage, (pgNum - 1));
+                pgNumber = (pgNum - 1);
+                CreatePaginationInterface(pgNumber);
+            }
+        });
+    prevBtnLi.appendChild(prevBtnA);
+    paginationInsert.appendChild(prevBtnLi);
+    
+    //Create pagination items function
+    function CreatePaginationItem (number) {
+        let pgA = document.createElement('a');
+            pgA.className = 'page-link';
+            pgA.href = '#';
+            pgA.textContent = (number + 1);
+        let pgLi = document.createElement('li');
+            if (pgNumber === number){
+                pgLi.className = 'page-item active';
+            } else{
+                pgLi.className = 'page-item';
+            }
+            pgLi.addEventListener('click', function(){
+                PopulateDataTable(pplPerPage, number);
+                pgNumber = number;
+                CreatePaginationInterface(number);
+            });
+        pgLi.appendChild(pgA);
+        paginationInsert.appendChild(pgLi);
+    }
+    
+    //Call pagination item creation function requisite number of times
+    for (let i = 0; i < totNumPgs; i++){
+        CreatePaginationItem(i);
+    }
+
+    //create next btn
+    let nextBtnA = document.createElement('a');
+        nextBtnA.className = 'page-link';
+        nextBtnA.textContent = 'Next';
+    let nextBtnLi = document.createElement('li');
+        if (pgNum === (totNumPgs -1)){
+            nextBtnLi.className = 'page-item disabled';
+        } else {
+            nextBtnLi.className = 'page-item';
+        }
+        nextBtnLi.addEventListener('click', function(){
+            if (pgNum != (totNumPgs - 1)){
+                PopulateDataTable(pplPerPage, (pgNum + 1));
+                pgNumber = (pgNum + 1);
+                CreatePaginationInterface(pgNumber);
+            }
+        });
+    nextBtnLi.appendChild(nextBtnA);
+    paginationInsert.appendChild(nextBtnLi);
 }
 
 //EVENT LISTENERS FOR BUTTONS/INPUTS
 //Items per page input dropdown
 pageItemNumSelect.addEventListener('change', function(){
     pplPerPage = parseInt(pageItemNumSelect.value);
+    pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
+    CreatePaginationInterface(0);
 });
 
 //Sorting data table header buttons
 idSort.addEventListener('click', function(){
     dataSelector = 'Id';
+    pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
+    CreatePaginationInterface(0);
 });
 
 firstNameSort.addEventListener('click', function(){
     dataSelector = 'FirstName';
+    pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
+    CreatePaginationInterface(0);
 });
 
 lastNameSort.addEventListener('click', function(){
     dataSelector = 'LastName';
+    pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
+    CreatePaginationInterface(0);
 });
 
 emailSort.addEventListener('click', function(){
     dataSelector = 'Email';
+    pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
+    CreatePaginationInterface(0);
 });
 
 heightSort.addEventListener('click', function(){
     dataSelector = 'Height';
+    pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
+    CreatePaginationInterface(0);
 });
 
 ageSort.addEventListener('click', function(){
     dataSelector = 'Age';
+    pgNumber = 0;
     PopulateDataTable(pplPerPage, 0);
+    CreatePaginationInterface(0);
 });
+
+//INITIAL CALLS TO POPULATE PAGE
+async function InitialCalls(){
+    await PopulateDataTable(pplPerPage, 0);
+    CreatePaginationInterface(0);
+}
+
+InitialCalls();
